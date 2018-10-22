@@ -1,4 +1,4 @@
-
+var question = document.getElementById("question");
 
 
 var ourRequest = new XMLHttpRequest();
