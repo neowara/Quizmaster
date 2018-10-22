@@ -1,4 +1,6 @@
 var question = document.getElementById("question");
+var category = document.getElementById("category");
+var difficulty = document.getElementById("difficulty");
 
 
 var ourRequest = new XMLHttpRequest();
