@@ -1,6 +1,13 @@
 
-var index = -1;
+var index = 0;
 var ourData;
+var i = 0;
+var currentQuestion = 0;
+
+// var correctAnswer = ourData[currentQuestion].correct_answer;
+// var wrongAnswer = ourData[currentQuestion].incorrect_answers;
+// var question = ourData[i].question;
+
 
     document.addEventListener('DOMContentLoaded', function (){
     var questionOutput = document.getElementById("question");
@@ -15,23 +22,12 @@ var ourData;
             ourData = ourRequest.response.results;
             // printQuestions(ourData);
             // var totalQuestions = ourData;
-            var i = 0;
-            var currentQuestion = 0;
-            var answers = 0;
-            var correctAnswer = ourData[currentQuestion].correct_answer;
-            var wrongAnswer = ourData[currentQuestion].incorrect_answers;
-            var question = ourData[i].question;
-
-            console.log(question);
-            // console.log(htmlString);
+            document.querySelector("#questionOutput").innerHTML = ourData[0].question;
+            // console.log(question);
 
 
                 ourData.forEach(function (){
-
-                    
             });
-
-            
           }
         }
       };
@@ -40,13 +36,34 @@ var ourData;
       ourRequest.send();
     });
 
-    function randomQuestion () {
+    
+
+
+    function printQuestions () {
         var q = 0;
         document.querySelector("#questionOutput").innerHTML = (ourData[++index].question || ourData[index=0].question);
 
-        }
+    }
 
-
+    function countScore () {
+        var trueOption = document.getElementById("trueOption").value;
+        var falseOption = document.getElementById("falseOption").value;
+        var score = 0;
     
+    if (trueOption == ourData[index].correct_answer) {
+        score++;
+        printQuestions();
+   } else {
+    printQuestions();
+   }
+   if (trueOption == ourData[1].correct_answer) {
+        score++;
+        printQuestions();
+   }
+   console.log(score);
+}
+
+
+
 
 
