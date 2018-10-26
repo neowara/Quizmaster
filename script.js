@@ -45,7 +45,7 @@
     const resultsContainer = document.getElementById("aOutput");
     const submitButton = document.getElementById("submit");
 
-    function buildQuiz() {
+    function buildQuiz( ) {
 
     var output = [];
 
@@ -58,9 +58,9 @@
           // ...add an HTML radio button
           answers.push(
             `<label>
-               <input type="radio" name="question${index}" id="fuck1" value="${currentQuestion.correct_answer}">
+               <input type="radio" name="question${index}" class="answersV" value="${currentQuestion.correct_answer}">
                 ${currentQuestion.correct_answer}
-                <input type="radio" name="question${index}" id="fuck2" value="${currentQuestion.incorrect_answers}">
+                <input type="radio" name="question${index}" class="answersV" value="${currentQuestion.incorrect_answers}">
                 ${currentQuestion.incorrect_answers}
              </label>`
           );  
@@ -83,30 +83,52 @@
 
 
     function showResults() {
+
+        var answerContainers = quizContainer.querySelectorAll('.answers');
+
         var numCorrect = 0;
-        var answerContainers = quizContainer.querySelectorAll("")
+        var userAnswer = 0;
 
 
-        ourData.forEach(function (currentQuestion, index) {
+        for (var i=0; i < ourData.length; i++) {
 
-            ourData[index].incorrect_answers.push(correct_answer);
+            userAnswer = (answerContainers[i].querySelector('input[name=question'+i+']:checked')||{}).value;
 
-            answerContainer = answerContainers[index];
-            selector = "input[name=question${index}]:checked";
-            var userAnswer = answerContainer.querySelector(selector).value;
-            
-            console.log(userAnswer);
+            if(userAnswer === ourData[i].correct_answer) {
+                numCorrect++;
+                console.log(numCorrect);
+            } 
+        }
 
-                if (userAnswer.checked === ourData[index].correct_answer) {
-                    numCorrect++;
-                    console.log(numCorrect);
-                } 
-            
-        });
+        resultsCont.innerHTML = numCorrect + ' out of ' + ourData.length;
 
-        resultsContainer.innerHTML = `${numCorrect} out of ${ourData.length}`;
 
     }
+
+    submitButton.onclick = function() {
+        showResults();
+    }
+
+
+        // ourData.forEach(function (currentQuestion, index) {
+
+        //     ourData[index].incorrect_answers.push(correct_answer);
+
+        //     answerContainer = answerContainers[index];
+        //     selector = "input[name=question${index}]:checked";
+        //     var userAnswer = answerContainer.querySelector(selector).value;
+            
+        //     console.log(userAnswer);
+
+        //         if (userAnswer.checked === ourData[index].correct_answer) {
+        //             numCorrect++;
+        //             console.log(numCorrect);
+        //         } 
+            
+        // });
+
+        // resultsContainer.innerHTML = `${numCorrect} out of ${ourData.length}`;
+
 
 
 
