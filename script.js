@@ -7,7 +7,7 @@
 
         ourRequest = new XMLHttpRequest(),
         method = "GET",
-        url = "https://opentdb.com/api.php?amount=10&category=15&difficulty=medium&type=boolean";
+        url = "https://opentdb.com/api.php?amount=10&category=15&difficulty=medium&type=multiple";
         
 
         ourRequest.open(method, url, true);
@@ -49,22 +49,51 @@
 
     var output = [];
 
-
     ourData.forEach(function (currentQuestion, index) {
         // we'll want to store the list of answer choices
+
         var answers = [];
-  
+        var altRand = [];
+        var alternatives = ourData[index].incorrect_answers;
+        alternatives.push(ourData[index].correct_answer);
+
+
+      for (var y = 4; y > 0; y--) {
+            var n = Math.floor(Math.random() * y);
+            var alt = alternatives[n];
+            altRand.push(alt);
+            alternatives.splice(n,1);
+          }
+          console.log(altRand);
+
+
         // and for each available answer...
           // ...add an HTML radio button
-          answers.push(
-            `<label>
-               <input type="radio" name="question${index}" class="answersV" value="${currentQuestion.correct_answer}">
-                ${currentQuestion.correct_answer}
-                <input type="radio" name="question${index}" class="answersV" value="${currentQuestion.incorrect_answers}">
-                ${currentQuestion.incorrect_answers}
-             </label>`
-          );  
+
+          for (var j = 0; j < altRand.length; j++) {
+            var button = document.createElement("input");
+            button.type = "radio";
+            button.value = altRand[j];
+            button.setAttribute("class", "button");
+            if (button.value == ourData.correct_answer) {
+              button.setAttribute("id", "correct");
+            }
+            // aOutput.appendChild(button);
+            answers.push(
+                `<label>
+                   <input type="radio" name="question${index}" class="answersV" value="${button}">
+                    ${altRand[j]}
+                 </label>`
+              );  
+          }
+
+
+          
+
+
         // add this question and its answers to the output
+
+
         output.push(
           `<div class="slide">
              <div class="question"> ${currentQuestion.question} </div>
@@ -110,39 +139,32 @@
     }
 
 
-        // ourData.forEach(function (currentQuestion, index) {
-
-        //     ourData[index].incorrect_answers.push(correct_answer);
-
-        //     answerContainer = answerContainers[index];
-        //     selector = "input[name=question${index}]:checked";
-        //     var userAnswer = answerContainer.querySelector(selector).value;
-            
-        //     console.log(userAnswer);
-
-        //         if (userAnswer.checked === ourData[index].correct_answer) {
-        //             numCorrect++;
-        //             console.log(numCorrect);
-        //         } 
-            
-        // });
-
-        // resultsContainer.innerHTML = `${numCorrect} out of ${ourData.length}`;
 
 
 
+// ourData.forEach(function (currentQuestion, index) {
 
+//     ourData[index].incorrect_answers.push(correct_answer);
 
-
-
-    // function printQuestions () {
-    //     document.querySelector("#qOutput").innerHTML = ourData[index++].question;
-    // }
-
-
-
-      
+//     answerContainer = answerContainers[index];
+//     selector = "input[name=question${index}]:checked";
+//     var userAnswer = answerContainer.querySelector(selector).value;
     
+//     console.log(userAnswer);
+
+//         if (userAnswer.checked === ourData[index].correct_answer) {
+//             numCorrect++;
+//             console.log(numCorrect);
+//         } 
+    
+// });
+
+// resultsContainer.innerHTML = `${numCorrect} out of ${ourData.length}`;
+
+// function printQuestions () {
+//     document.querySelector("#qOutput").innerHTML = ourData[index++].question;
+// }
+
 // var currentQuestion = 0;
 // var questionOutput = document.getElementById("question");
 // var category = document.getElementById("category");
