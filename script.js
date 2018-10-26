@@ -1,7 +1,15 @@
+    
+    //here we define our global variables
+
     var ourData;
     var ourRequest;
     var index = 0;
-    // var questionContainer = document.getElementById("qOutput");
+    const quizContainer = document.getElementById("qOutput");
+    const resultsContainer = document.getElementById("aOutput");
+    const submitButton = document.getElementById("submit");
+
+    //connect to the API and get the response and tell our 
+    //browser to read it in the form of JSON
 
     document.addEventListener('DOMContentLoaded', function (){
 
@@ -15,10 +23,6 @@
             if ((ourRequest.readyState == 4) && (ourRequest.status == 200 )) {
                  ourData = ourRequest.response.results;
 
-            // document.querySelector("#qOutput").innerHTML = ourData[0].question;
-
-            // countScore(ourData);
-            // printQuestions(ourData);
             buildQuiz();
             }
         }; 
@@ -26,172 +30,107 @@
         ourRequest.send();
         });
 
-    // function countScore() {
-    //     var answerChoices = document.quiz.answer1.value;
-    //     var correctAnswers = 0;
-
-    //     ourData.forEach(function(answer, index){
-    //         var answerContainers = answerChoices[index];
-    //         var selector = `input[name = question${index}]:checked`;
-    //         var userAnswer = (answerChoices.querySelector(selector) || {}).;
-    //         var answerValues = ourData[index].correct_answer;
 
 
-    //     });
-
-    // }
-
-    const quizContainer = document.getElementById("qOutput");
-    const resultsContainer = document.getElementById("aOutput");
-    const submitButton = document.getElementById("submit");
-
-    function buildQuiz( ) {
-
-    var output = [];
-
-    ourData.forEach(function (currentQuestion, index) {
-        // we'll want to store the list of answer choices
-
-        var answers = [];
-        var altRand = [];
-        var alternatives = ourData[index].incorrect_answers;
-        alternatives.push(ourData[index].correct_answer);
 
 
-      for (var y = 4; y > 0; y--) {
-            var n = Math.floor(Math.random() * y);
-            var alt = alternatives[n];
-            altRand.push(alt);
-            alternatives.splice(n,1);
-          }
-          console.log(altRand);
 
 
-        // and for each available answer...
-          // ...add an HTML radio button
+    //here we create a function that will build 
+    //our quiz questions and answers
+    function buildQuiz() {
 
-          for (var j = 0; j < altRand.length; j++) {
-            var button = document.createElement("input");
-            button.type = "radio";
-            button.value = altRand[j];
-            button.setAttribute("class", "button");
-            if (button.value == ourData.correct_answer) {
-              button.setAttribute("id", "correct");
-            }
-            // aOutput.appendChild(button);
-            answers.push(
-                `<label>
-                   <input type="radio" name="question${index}" class="answersV" value="${button}">
-                    ${altRand[j]}
-                 </label>`
-              );  
-          }
+            var output = [];
 
+            ourData.forEach(function (currentQuestion, index) {
 
-          
+                // we'll want to store the list of answer choices
+                // we can even push the correct answers into 
+                //the incorrect answers array that already exists
 
+                var answers = [];
+                var altRand = [];
+                var alternatives = ourData[index].incorrect_answers;
+                alternatives.push(ourData[index].correct_answer);
 
-        // add this question and its answers to the output
+                //randomize our answers so they that the correct 
+                //answers don't always the same index
 
-
-        output.push(
-          `<div class="slide">
-             <div class="question"> ${currentQuestion.question} </div>
-             <div class="answers"> ${answers.join("")} </div>
-           </div>`
-        );
-      });
-
-    // finally combine our output list into one string of HTML and put it on the page
-    quizContainer.innerHTML = output.join("");
+                for (var y = 4; y > 0; y--) {
+                    var n = Math.floor(Math.random() * y);
+                    var alt = alternatives[n];
+                    altRand.push(alt);
+                    alternatives.splice(n,1);
+                    }
+                    console.log(altRand);
 
 
-    
+                    // and for each available answer...
+                    // ...add an HTML radio button
 
+                    for (var j = 0; j < altRand.length; j++) {
+                    var button = document.createElement("input");
+                    button.type = "radio";
+                    button.value = altRand[j];
+                    button.setAttribute("class", "button");
+                    if (button.value == ourData[index].correct_answer) {
+                        button.setAttribute("id", "correct");
+                    }
+                    answers.push(
+                        `<label>
+                            <input type="radio" name="question${index}" id="${button.id}" value="${button.value}">
+                            ${altRand[j]}
+                            </label>`
+                        );  
+                    }
+
+                // add this question and its answers to the output
+
+                output.push(
+                    `<div class="slide">
+                        <div class="question"> ${currentQuestion.question} </div>
+                        <div class="answers"> ${answers.join("")} </div>
+                    </div>`
+                );
+            });
+
+
+        // finally combine our output list into one string of HTML and put it on the page
+        quizContainer.innerHTML = output.join("");
     }
 
+    //lastly we need a function to count the user's answers and count a score
 
     function showResults() {
 
-        var answerContainers = quizContainer.querySelectorAll('.answers');
+        //we create our variables to contain the possible answers and count the number of correct answers
+        //and our user answers
 
+        var answerContainers = quizContainer.querySelectorAll('.answers');
         var numCorrect = 0;
         var userAnswer = 0;
 
+    // if our user click on the input that has an id with the "correct" value in it
+    // then our score will increase and it will display how many are correct out of the 
+    // amount of questions displayed
 
         for (var i=0; i < ourData.length; i++) {
-
-            userAnswer = (answerContainers[i].querySelector('input[name=question'+i+']:checked')||{}).value;
-
-            if(userAnswer === ourData[i].correct_answer) {
+            userAnswer = (answerContainers[i].querySelector('input[name=question'+i+']:checked')||{}).id;
+            if(userAnswer === "correct") {
                 numCorrect++;
                 console.log(numCorrect);
             } 
         }
-
         resultsCont.innerHTML = numCorrect + ' out of ' + ourData.length;
-
-
     }
-
     submitButton.onclick = function() {
         showResults();
-    }
+    };
 
-
-
-
-
-// ourData.forEach(function (currentQuestion, index) {
-
-//     ourData[index].incorrect_answers.push(correct_answer);
-
-//     answerContainer = answerContainers[index];
-//     selector = "input[name=question${index}]:checked";
-//     var userAnswer = answerContainer.querySelector(selector).value;
     
-//     console.log(userAnswer);
-
-//         if (userAnswer.checked === ourData[index].correct_answer) {
-//             numCorrect++;
-//             console.log(numCorrect);
-//         } 
-    
-// });
-
-// resultsContainer.innerHTML = `${numCorrect} out of ${ourData.length}`;
-
-// function printQuestions () {
-//     document.querySelector("#qOutput").innerHTML = ourData[index++].question;
-// }
-
-// var currentQuestion = 0;
-// var questionOutput = document.getElementById("question");
-// var category = document.getElementById("category");
-// var difficulty = document.getElementById("difficulty");
-// var correctAnswer = ourData[currentQuestion].correct_answer;
-// var wrongAnswer = ourData[currentQuestion].incorrect_answers;
-// var question = ourData[i].question;
 
 
 
-//     function countScore () {
-//         var trueOption = document.getElementById("trueOption").value;
-//         var falseOption = document.getElementById("falseOption").value;
-//         var score = 0;
-    
-//     if (trueOption == ourData[index].correct_answer) {
-//         score++;
-//         printQuestions();
-//    } else {
-//     printQuestions();
-//    }
-//    if (trueOption == ourData[1].correct_answer) {
-//         score++;
-//         printQuestions();
-//    }
-//    console.log(score);
-// }
 
 
 
